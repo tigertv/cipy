@@ -65,12 +65,11 @@ Usage
 Direct way
 ----------
 
-The cipher classes can encrypt only letters which exist in the alphabet, and they don't have a state.
+The cipher classes can encrypt only characters which exist in the alphabet, and they don't have a state.
 
 .. code-block:: python
 	
-	from secretpy import Caesar
-	from secretpy import alphabets
+	from secretpy import Caesar, alphabets
 
 	alphabet = alphabets.GERMAN
 	plaintext = u"thequickbrownfoxjumpsoverthelazydog"
@@ -107,68 +106,49 @@ The cipher classes can encrypt only letters which exist in the alphabet, and the
 CryptMachine
 ------------
 
-``CryptMachine`` saves state. There are alphabet, key and cipher, they can be changed in anytime.
-In the previous example, plaintext contains only letters existing in the alphabet and in the lower case without spaces.
-To change the behaviour, you can use ``CryptMachine`` and decorators(``UpperCase``, ``NoSpace``, ``SaveCase`` and etc.), so it's a preferred way to do encryption/decryption:
+``CryptMachine`` saves a state. There are alphabet, key and cipher, they can be changed in anytime.
+In the previous example, plaintext contains only characters existing in the alphabet i.e. without spaces.
+To change the behaviour, you can use ``CryptMachine`` and decorators(``SaveAll``, ``RemoveNonAlphabet``), so it's a preferred way to do encryption/decryption:
 
 .. code-block:: python
-
-	from secretpy import Atbash
-	from secretpy import Caesar
-
-	from secretpy import CryptMachine
-	from secretpy.cmdecorators import UpperCase, SaveSpaces, NoSpaces
-	from secretpy import alphabets
-
-
+	
+	from secretpy import Atbash, Caesar, alphabets, CryptMachine
+	from secretpy.cmdecorators import SaveAll, RemoveNonAlphabet
+	
+	
 	def encdec(machine, plaintext):
-	    print(plaintext)
-	    enc = machine.encrypt(plaintext)
-	    print(enc)
-	    dec = machine.decrypt(enc)
-	    print(dec)
-	    print("-----------------------------------")
-
-
-	plaintext = u"thequickbrownfoxjumpsoverthelazydog"
+		print("--------------------------------------------------------------------")
+		print(plaintext)
+		enc = machine.encrypt(plaintext)
+		print(enc)
+		print(machine.decrypt(enc))
+	
+	
+	alphabet = alphabets.GERMAN
 	key = 3
-	cipher = Caesar()
+	
+	cm0 = CryptMachine(Caesar(), key)
+	cm0.set_alphabet(alphabet)
 
-	cm = CryptMachine(cipher, key)
+	plaintext = "I love non-alphabet characters. These are : ^,&@$~(*;?&#. That's it!"
+	cm = SaveAll(cm0)
 	encdec(cm, plaintext)
 
-	cm.set_alphabet(alphabets.GERMAN)
-	encdec(cm, plaintext)
-
-	cm = SaveSpaces(cm)
-	cm.set_key(9)
-	plaintext = u"the quick brown fox jumps over the lazy dog"
-	encdec(cm, plaintext)
-
-	cm = NoSpaces(UpperCase(cm))
-	cm.set_cipher(Atbash())
-	plaintext = u"Achtung Minen"
+	plaintext = "I don't love non-alphabet characters. I will remove all of them: ^,&@$~(*;?&#. Great!"
+	cm = RemoveNonAlphabet(cm0)
 	encdec(cm, plaintext)
 
 	'''
 	Output:
 
-	thequickbrownfoxjumpsoverthelazydog
-	wkhtxlfneurzqiramxpsvryhuwkhodcbgrj
-	thequickbrownfoxjumpsoverthelazydog
-	-----------------------------------
-	thequickbrownfoxjumpsoverthelazydog
-	wkhtxlfneurzqirämxpsvryhuwkhodüögrj
-	thequickbrownfoxjumpsoverthelazydog
-	-----------------------------------
-	the quick brown fox jumps over the lazy dog
-	üqn zßrlt käxbw oxc sßvyö xanä üqn ujed mxp
-	the quick brown fox jumps over the lazy dog
-	-----------------------------------
-	Achtung Minen
-	ßÖWKJQXRVQZQ
-	ACHTUNGMINEN
-	-----------------------------------
+	--------------------------------------------------------------------
+	I love non-alphabet characters. These are : ^,&@$~(*;?&#. That's it!
+	L oryh qrq-doskdehw fkdudfwhuv. Wkhvh duh : ^,&@$~(*;?&#. Wkdw'v lw!
+	I love non-alphabet characters. These are : ^,&@$~(*;?&#. That's it!
+	--------------------------------------------------------------------
+	I don't love non-alphabet characters. I will remove all of them: ^,&@$~(*;?&#. Great!
+	lgrqworyhqrqdoskdehwfkdudfwhuvlzloouhpryhdooriwkhpjuhdw
+	idontlovenonalphabetcharactersiwillremoveallofthemgreat
 	'''
 
 CompositeMachine

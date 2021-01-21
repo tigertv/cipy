@@ -7,14 +7,20 @@ SecretPy is a cryptographic Python package. It uses the following classical ciph
 - Affine
 - Atbash
 - Autokey
-- Beaufort 
+- Bazeries
+- Beaufort
 - Bifid
-- Caesar
+- Caesar, Caesar Progressive
+- Chaocipher
+- Columnar Transposition, Myszkowski Transposition
 - Keyword
+- Nihilist
 - Simple Substitution
+- Playfair, Two Square(Double Playfair), Three Square, Four Square
 - Polybius
 - Rot13, Rot5, Rot18, Rot47
 - Trifid
-- Vigenere
-- Zigzag
+- Vic
+- Vigenere, Gronsfeld, Porta
+- Zigzag(Railfence)
 
